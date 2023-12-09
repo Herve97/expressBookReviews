@@ -81,9 +81,6 @@ public_users.get('/author/:author', function (req, res) {
     }).catch((error)=>{
         res.send(error.message)
     })
-    
-    
-    // res.send(authorBooks)
 });
 
 // Get all books based on title
