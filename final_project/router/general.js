@@ -3,6 +3,7 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+let axios = require('axios');
 
 // let myUsers = []
 
@@ -35,37 +36,81 @@ public_users.post("/register", (req, res) => {
 
 // Get the book list available in the shop
 public_users.get('/', function (req, res) {
-    //Write your code here
-    return res.send(JSON.stringify(books, null, 4));
+    let myPromise = new Promise((resolve,reject) => {
+        resolve(JSON.stringify(books, null, 4))
+        reject("Unable to fetch book list")
+    })
+    myPromise.then((data)=>{
+        res.send(data)
+    }).catch((error)=>{
+        res.send(error.message)
+    })
+    //return res.send(JSON.stringify(books, null, 4));
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', function (req, res) {
     const isbn = req.params.isbn;
-    res.send(books[isbn])
+    let myPromise = new Promise((resolve,reject) => {
+        resolve(books[isbn])
+        reject("Unable to fetch book isbn")
+    })
+    myPromise.then((data)=>{
+        res.send(data)
+    }).catch((error)=>{
+        res.send(error.message)
+    })
+    // res.send(books[isbn])
 });
 
 // Get book details based on author
 public_users.get('/author/:author', function (req, res) {
     const author = req.params.author;
-    let authorBooks = [];
-    Object.entries(books).forEach(([key, value]) => {
-        if (value.author === author) {
-            authorBooks.push(value.title)
-        }
+    let myPromise = new Promise((resolve,reject) => {
+        let authorBooks = [];
+        Object.entries(books).forEach(([key, value]) => {
+            if (value.author === author) {
+                authorBooks.push(value.title)
+            }
+        })
+        resolve(authorBooks)
+        reject("Unable to fetch book isbn")
     })
-    res.send(authorBooks)
+    myPromise.then((data)=>{
+        res.send(data)
+    }).catch((error)=>{
+        res.send(error.message)
+    })
+    
+    
+    // res.send(authorBooks)
 });
 
 // Get all books based on title
 public_users.get('/title/:title', function (req, res) {
     const title = req.params.title;
 
-    Object.entries(books).forEach(([key, value]) => {
-        if (value.title === title) {
-            res.send({ author: value.author, title: value.title, reviews: value.reviews })
-        }
+    let myPromise = new Promise((resolve,reject) => {
+        let val;
+        Object.entries(books).forEach(([key, value]) => {
+            if (value.title === title) {
+                val ={ author: value.author, title: value.title, reviews: value.reviews }
+            }
+        })
+        resolve(val)
+        reject("Unable to fetch book isbn")
     })
+    myPromise.then((data)=>{
+        res.send(data)
+    }).catch((error)=>{
+        res.send(error.message)
+    })
+
+    // Object.entries(books).forEach(([key, value]) => {
+    //     if (value.title === title) {
+    //         res.send({ author: value.author, title: value.title, reviews: value.reviews })
+    //     }
+    // })
 
 });
 
